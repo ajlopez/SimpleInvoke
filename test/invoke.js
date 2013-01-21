@@ -67,3 +67,16 @@ si.invoke(obj, obj.add, [1, 2], obj, obj.add, [3, 4], function (err, results) {
 
 assert.equal(ninvokes, 2);
 
+// Invoke function collecting error and partial results in callback
+
+ninvokes = 0;
+
+si.invoke(obj, obj.add, [1, 2], function (cb) { cb("error"); }, obj, obj.add, [3, 4], function (err, results) {
+    assert.equal(err, "error");
+    assert.ok(results);
+    assert.equal(results.length, 1);
+    assert.equal(results[0], 3);
+});
+
+assert.equal(ninvokes, 1);
+
