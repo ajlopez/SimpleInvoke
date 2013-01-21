@@ -37,6 +37,7 @@ var obj = {
         assert.equal(this, obj);
         assert.equal(this.x, 1);
         ninvokes++;
+        cb(null, a + b);
     }
 };
 
@@ -44,4 +45,25 @@ si.invoke(obj, obj.add, [1, 2]);
 
 assert.equal(ninvokes, 1);
 
+// Invoke two object function
+
+ninvokes = 0;
+
+si.invoke(obj, obj.add, [1, 2], obj, obj.add, [3, 4]);
+
+assert.equal(ninvokes, 2);
+
+// Invoke two object function collecting results in callback
+
+ninvokes = 0;
+
+si.invoke(obj, obj.add, [1, 2], obj, obj.add, [3, 4], function (err, results) {
+    assert.ok(!err);
+    assert.ok(results);
+    assert.equal(results.length, 2);
+    assert.equal(results[0], 3);
+    assert.equal(results[1], 7);
+});
+
+assert.equal(ninvokes, 2);
 
