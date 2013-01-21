@@ -80,3 +80,44 @@ si.invoke(obj, obj.add, [1, 2], function (cb) { cb("error"); }, obj, obj.add, [3
 
 assert.equal(ninvokes, 1);
 
+// Invoke function collecting throw error and partial results in callback
+
+ninvokes = 0;
+
+si.invoke(obj, obj.add, [1, 2], function (cb) { throw "error"; }, obj, obj.add, [3, 4], function (err, results) {
+    assert.equal(err, "error");
+    assert.ok(results);
+    assert.equal(results.length, 1);
+    assert.equal(results[0], 3);
+});
+
+assert.equal(ninvokes, 1);
+
+// Use previous result in next invocation
+
+ninvokes = 0;
+
+si.invoke(obj, obj.add, [1, 2], obj, obj.add, [si.result, 4], function (err, results) {
+    assert.ok(!err);
+    assert.ok(results);
+    assert.equal(results.length, 2);
+    assert.equal(results[0], 3);
+    assert.equal(results[1], 7);
+});
+
+assert.equal(ninvokes, 2);
+
+// Use previous error in next invocation
+
+ninvokes = 0;
+
+si.invoke(obj, obj.add, [1, 2], function(result, cb) { cb(result); }, [si.result], obj, obj.add, [si.err, 4], function (err, results) {
+    assert.ok(!err);
+    assert.ok(results);
+    assert.equal(results.length, 2);
+    assert.equal(results[0], 3);
+    assert.equal(results[1], 7);
+});
+
+assert.equal(ninvokes, 2);
+
