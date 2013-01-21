@@ -136,6 +136,10 @@ TBD
 
 - Samples
 
+## Versions
+
+- 0.0.1: Published.
+
 ## Inception
 
 The syntax and idea was inspired by [azure-scripty](https://github.com/glennblock/azure-scripty) by [Glenn Block](https://github.com/glennblock).
